@@ -3,6 +3,7 @@ import { Header } from '../components/Header';
 import { SearchBar } from '../components/SearchBar';
 import { TrackList } from '../components/TrackList';
 import { PlayerControls } from '../components/PlayerControls';
+import { AutoplayIndicator } from '../components/AutoplayIndicator';
 import { useYouTubePlayer } from '../hooks/useYouTubePlayer';
 import { useMediaSession } from '../hooks/useMediaSession';
 import { Track } from '../types/youtube';
@@ -39,12 +40,23 @@ const Index = () => {
     playTrack(track, queue, index);
   };
 
+  const nextTrack = playerState.queue[playerState.currentIndex + 1];
+
   return (
     <div className="min-h-screen bg-background">
       {/* YouTube Player (hidden) */}
       <div id="youtube-player" style={{ display: 'none' }} />
       
       <Header />
+
+      {/* Autoplay Indicator */}
+      <AutoplayIndicator
+        isPlaying={playerState.isPlaying}
+        currentTrackTitle={playerState.currentTrack?.title}
+        nextTrackTitle={nextTrack?.title}
+        queueLength={playerState.queue.length}
+        currentIndex={playerState.currentIndex}
+      />
       
       <main className="max-w-6xl mx-auto px-6 py-8 pb-32">
         {/* Hero Section */}

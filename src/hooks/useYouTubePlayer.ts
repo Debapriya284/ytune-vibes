@@ -58,16 +58,27 @@ export const useYouTubePlayer = () => {
         modestbranding: 1,
         rel: 0,
         showinfo: 0,
+        autoplay: 1,
       },
       events: {
         onReady: (event: any) => {
           playerRef.current = event.target;
           event.target.setVolume(playerState.volume);
+          console.log('YouTube player ready');
         },
         onStateChange: (event: any) => {
           const state = event.data;
           const isPlaying = state === window.YT.PlayerState.PLAYING;
           const isBuffering = state === window.YT.PlayerState.BUFFERING;
+          const hasEnded = state === window.YT.PlayerState.ENDED;
+          
+          console.log('Player state changed:', {
+            state,
+            isPlaying,
+            isBuffering,
+            hasEnded,
+            currentTrack: playerState.currentTrack?.title
+          });
           
           setPlayerState(prev => ({
             ...prev,
@@ -76,9 +87,19 @@ export const useYouTubePlayer = () => {
           }));
 
           // Auto-play next track when current track ends
-          if (state === window.YT.PlayerState.ENDED) {
-            handleNext();
+          if (hasEnded) {
+            console.log('Track ended, auto-playing next...');
+            setTimeout(() => {
+              handleNext();
+            }, 500); // Small delay to ensure state is updated
           }
+        },
+        onError: (event: any) => {
+          console.error('YouTube player error:', event.data);
+          // Skip to next track on error
+          setTimeout(() => {
+            handleNext();
+          }, 1000);
         },
       },
     });
@@ -98,10 +119,15 @@ export const useYouTubePlayer = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isAPIReady]);
+  }, [isAPIReady, playerState.isPlaying]);
 
   const playTrack = useCallback((track: Track, queue: Track[] = [], index: number = 0) => {
-    if (!playerRef.current) return;
+    if (!playerRef.current) {
+      console.log('Player not ready yet');
+      return;
+    }
+
+    console.log('Playing track:', track.title, 'at index', index, 'of queue length', queue.length);
 
     setPlayerState(prev => ({
       ...prev,
@@ -111,28 +137,38 @@ export const useYouTubePlayer = () => {
       isLoading: true,
     }));
 
-    playerRef.current.loadVideoById(track.videoId);
+    // Load and automatically play the video
+    playerRef.current.loadVideoById(track.videoId, 0, 'default');
+    
+    // Ensure autoplay after load
+    setTimeout(() => {
+      if (playerRef.current) {
+        playerRef.current.playVideo();
+      }
+    }, 1000);
   }, []);
-
-  const togglePlayPause = useCallback(() => {
-    if (!playerRef.current) return;
-
-    if (playerState.isPlaying) {
-      playerRef.current.pauseVideo();
-    } else {
-      playerRef.current.playVideo();
-    }
-  }, [playerState.isPlaying]);
 
   const handleNext = useCallback(() => {
     const { queue, currentIndex, repeat, shuffle } = playerState;
-    if (queue.length === 0) return;
+    
+    console.log('handleNext called:', {
+      queueLength: queue.length,
+      currentIndex,
+      repeat,
+      shuffle
+    });
+
+    if (queue.length === 0) {
+      console.log('No queue available');
+      return;
+    }
 
     let nextIndex = currentIndex;
 
     if (repeat === 'one') {
       // Replay current track
-      if (playerRef.current) {
+      console.log('Repeating current track');
+      if (playerRef.current && playerState.currentTrack) {
         playerRef.current.seekTo(0);
         playerRef.current.playVideo();
       }
@@ -141,20 +177,40 @@ export const useYouTubePlayer = () => {
 
     if (shuffle) {
       const availableIndexes = queue.map((_, i) => i).filter(i => i !== currentIndex);
-      nextIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+      if (availableIndexes.length > 0) {
+        nextIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+        console.log('Shuffle mode: playing index', nextIndex);
+      } else {
+        console.log('No more tracks available for shuffle');
+        return;
+      }
     } else {
       nextIndex = currentIndex + 1;
+      console.log('Next index would be:', nextIndex, 'of', queue.length);
+      
       if (nextIndex >= queue.length) {
         if (repeat === 'all') {
           nextIndex = 0;
+          console.log('Repeat all: going back to start');
         } else {
-          return; // End of queue
+          console.log('End of queue reached, no repeat');
+          // Don't return - let it continue to potentially play next track
+          // Instead, keep playing if there are more tracks
+          if (queue.length > 1) {
+            nextIndex = 0; // Start from beginning
+            console.log('Auto-continuing from start of queue');
+          } else {
+            return;
+          }
         }
       }
     }
 
     if (queue[nextIndex]) {
+      console.log('Playing next track:', queue[nextIndex].title);
       playTrack(queue[nextIndex], queue, nextIndex);
+    } else {
+      console.log('No track found at index:', nextIndex);
     }
   }, [playerState, playTrack]);
 
@@ -191,6 +247,16 @@ export const useYouTubePlayer = () => {
   const toggleShuffle = useCallback(() => {
     setPlayerState(prev => ({ ...prev, shuffle: !prev.shuffle }));
   }, []);
+
+  const togglePlayPause = useCallback(() => {
+    if (!playerRef.current) return;
+
+    if (playerState.isPlaying) {
+      playerRef.current.pauseVideo();
+    } else {
+      playerRef.current.playVideo();
+    }
+  }, [playerState.isPlaying]);
 
   return {
     playerState,
