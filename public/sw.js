@@ -1,4 +1,4 @@
-const CACHE_NAME = 'youtune-v1';
+const CACHE_NAME = 'gumu-player-v1';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',

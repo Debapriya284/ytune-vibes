@@ -1,7 +1,7 @@
 {
-  "name": "YouTune Music Player",
-  "short_name": "YouTune",
-  "description": "A beautiful music player that streams from YouTube",
+  "name": "Gumu Player",
+  "short_name": "Gumu",
+  "description": "A beautiful music player that streams from YouTube - built by a CSE student who was fed up with premium prompts",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1b23",
@@ -29,6 +29,18 @@
       "short_name": "Search",
       "description": "Search for your favorite music",
       "url": "/?action=search",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "About",
+      "short_name": "About",
+      "description": "Learn about the creator",
+      "url": "/about",
       "icons": [
         {
           "src": "/icon-192.png",

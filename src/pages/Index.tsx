@@ -4,6 +4,7 @@ import { SearchBar } from '../components/SearchBar';
 import { TrackList } from '../components/TrackList';
 import { PlayerControls } from '../components/PlayerControls';
 import { AutoplayIndicator } from '../components/AutoplayIndicator';
+import { AboutSection } from '../components/AboutSection';
 import { useYouTubePlayer } from '../hooks/useYouTubePlayer';
 import { useMediaSession } from '../hooks/useMediaSession';
 import { Track } from '../types/youtube';
@@ -64,8 +65,11 @@ const Index = () => {
           <h2 className="text-4xl md:text-6xl font-bold mb-4">
             Discover <span className="gradient-text">Amazing Music</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Search and stream millions of songs from YouTube with our beautiful music player
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
+            Search and stream millions of songs from YouTube with Gumu Player
+          </p>
+          <p className="text-lg text-primary/80 font-medium mb-8">
+            🎵 No Premium Required • Built by a Student for Students
           </p>
           
           {!isAPIReady && (
@@ -94,6 +98,9 @@ const Index = () => {
           />
         </div>
       </main>
+
+      {/* About Section */}
+      <AboutSection />
 
       {/* Player Controls */}
       <PlayerControls
