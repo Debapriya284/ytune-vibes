@@ -1,15 +1,9 @@
 import React from 'react';
 import { 
-  Play, 
-  Pause, 
-  SkipBack, 
-  SkipForward, 
-  Volume2, 
-  Repeat, 
-  Shuffle,
-  VolumeX
+  Play, Pause, SkipBack, SkipForward, 
+  Volume2, VolumeX, Repeat, Shuffle 
 } from 'lucide-react';
-import { Track, PlayerState } from '../types/youtube';
+import { PlayerState } from '../types/youtube';
 import { Slider } from '@/components/ui/slider';
 
 interface PlayerControlsProps {
@@ -41,119 +35,103 @@ export const PlayerControls: React.FC<PlayerControlsProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleSeek = (value: number[]) => {
-    onSeek(value[0]);
-  };
-
-  const handleVolumeChange = (value: number[]) => {
-    onVolumeChange(value[0]);
-  };
-
-  if (!currentTrack) {
-    return null;
-  }
+  if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 glass border-t border-border/50 p-4 z-50">
-      <div className="max-w-6xl mx-auto">
-        {/* Progress bar */}
-        <div className="mb-4">
-          <Slider
-            value={[currentTime]}
-            max={duration || 100}
-            step={1}
-            onValueChange={handleSeek}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
+    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-border/30 z-50">
+      {/* Thin progress line at very top */}
+      <div className="h-0.5 bg-muted">
+        <div
+          className="h-full bg-primary transition-all duration-200"
+          style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+        />
+      </div>
 
-        <div className="flex items-center justify-between">
-          {/* Current track info */}
-          <div className="flex items-center space-x-4 flex-1 min-w-0">
+      <div className="max-w-6xl mx-auto px-4 py-3">
+        <div className="flex items-center gap-4">
+          {/* Track info */}
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             <img
               src={currentTrack.thumbnail}
               alt={currentTrack.title}
-              className="w-12 h-12 rounded-lg object-cover"
+              className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
             />
-            <div className="min-w-0 flex-1">
-              <h4 className="font-medium truncate">{currentTrack.title}</h4>
-              <p className="text-sm text-muted-foreground truncate">{currentTrack.artist}</p>
+            <div className="min-w-0">
+              <p className="text-sm font-medium truncate text-foreground">{currentTrack.title}</p>
+              <p className="text-xs text-muted-foreground truncate">{currentTrack.artist}</p>
             </div>
           </div>
 
-          {/* Main controls */}
-          <div className="flex items-center space-x-4">
+          {/* Center controls */}
+          <div className="flex items-center gap-1">
             <button
               onClick={onToggleShuffle}
-              className={`player-button-secondary ${shuffle ? 'text-primary bg-primary/20' : 'text-muted-foreground'}`}
+              className={`player-button-secondary ${shuffle ? 'text-primary' : 'text-muted-foreground'}`}
             >
               <Shuffle className="w-4 h-4" />
             </button>
 
             <button
               onClick={onPrevious}
-              className="player-button-secondary text-foreground hover:text-primary"
+              className="player-button-secondary text-foreground"
             >
               <SkipBack className="w-5 h-5" />
             </button>
 
             <button
               onClick={onTogglePlayPause}
-              className="player-button text-white hover:scale-110"
+              className="player-button text-primary-foreground"
             >
               {isPlaying ? (
-                <Pause className="w-6 h-6 fill-white" />
+                <Pause className="w-6 h-6 fill-current" />
               ) : (
-                <Play className="w-6 h-6 fill-white ml-1" />
+                <Play className="w-6 h-6 fill-current ml-0.5" />
               )}
             </button>
 
             <button
               onClick={onNext}
-              className="player-button-secondary text-foreground hover:text-primary"
+              className="player-button-secondary text-foreground"
             >
               <SkipForward className="w-5 h-5" />
             </button>
 
             <button
               onClick={onToggleRepeat}
-              className={`player-button-secondary ${
-                repeat !== 'none' ? 'text-primary bg-primary/20' : 'text-muted-foreground'
+              className={`player-button-secondary relative ${
+                repeat !== 'none' ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               <Repeat className="w-4 h-4" />
               {repeat === 'one' && (
-                <span className="absolute -top-1 -right-1 text-xs bg-primary text-white rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-primary text-primary-foreground rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">
                   1
                 </span>
               )}
             </button>
           </div>
 
-          {/* Volume control */}
-          <div className="flex items-center space-x-2 flex-1 justify-end min-w-0">
-            <button
-              onClick={() => onVolumeChange(volume > 0 ? 0 : 80)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {volume === 0 ? (
-                <VolumeX className="w-5 h-5" />
-              ) : (
-                <Volume2 className="w-5 h-5" />
-              )}
-            </button>
-            <div className="w-24">
-              <Slider
-                value={[volume]}
-                max={100}
-                step={1}
-                onValueChange={handleVolumeChange}
-                className="volume-slider"
-              />
+          {/* Time + Volume */}
+          <div className="flex items-center gap-3 flex-1 justify-end min-w-0">
+            <span className="text-xs text-muted-foreground hidden sm:block">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={() => onVolumeChange(volume > 0 ? 0 : 80)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </button>
+              <div className="w-20">
+                <Slider
+                  value={[volume]}
+                  max={100}
+                  step={1}
+                  onValueChange={(v) => onVolumeChange(v[0])}
+                />
+              </div>
             </div>
           </div>
         </div>
