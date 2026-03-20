@@ -67,13 +67,13 @@ const Index = () => {
         {playerState.currentTrack && (
           <div className="mb-8 p-6 rounded-2xl bg-card border border-border/30 now-playing-glow">
             <div className="flex flex-col items-center text-center">
-              <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary/20 mb-4 ${
+              <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary/20 mb-4 flex items-center justify-center bg-card ${
                 playerState.isPlaying ? 'animate-spin-slow' : ''
               }`}>
                 <img
                   src={playerState.currentTrack.thumbnail}
                   alt={playerState.currentTrack.title}
-                  className="w-full h-full object-cover"
+                  className="w-3/4 h-3/4 object-contain"
                 />
               </div>
               <h2 className="text-lg font-bold text-foreground truncate max-w-full px-2">
