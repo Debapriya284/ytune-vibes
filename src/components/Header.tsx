@@ -1,47 +1,29 @@
 import React from 'react';
-import { Music, Headphones, User, Github } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Music } from 'lucide-react';
 
 export const Header = () => {
-  const handleAboutClick = () => {
-    // Scroll to about section or navigate to about page
-    const aboutSection = document.getElementById('about-section');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollToAbout = () => {
+    document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <header className="sticky top-0 z-40 glass border-b border-border/50">
-      <div className="max-w-6xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-accent">
-              <Headphones className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold gradient-text">Gumu Player</h1>
-              <p className="text-sm text-muted-foreground">Free Music Streaming</p>
-            </div>
+    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/20">
+      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <Music className="w-4 h-4 text-primary-foreground" />
           </div>
-          
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleAboutClick}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <User className="w-4 h-4 mr-2" />
-              About
-            </Button>
-            
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Music className="w-4 h-4" />
-              <span>Powered by YouTube</span>
-            </div>
-          </div>
+          <span className="text-lg font-bold text-foreground">Gumu</span>
         </div>
+
+        <nav className="flex items-center gap-4">
+          <button
+            onClick={scrollToAbout}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            About
+          </button>
+        </nav>
       </div>
     </header>
   );
