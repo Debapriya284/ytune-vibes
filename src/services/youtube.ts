@@ -18,7 +18,7 @@ export class YouTubeService {
           part: 'snippet',
           q: `${query} official audio music`,
           type: 'video',
-          videoCategoryId: '10', // Music category
+          videoCategoryId: '10',
           maxResults,
           key: this.apiKey,
         },
@@ -43,6 +43,44 @@ export class YouTubeService {
     }
   }
 
+  async getRelatedVideos(videoId: string, maxResults: number = 10): Promise<Track[]> {
+    try {
+      const searchResponse = await axios.get(`${BASE_URL}/search`, {
+        params: {
+          part: 'snippet',
+          relatedToVideoId: videoId,
+          type: 'video',
+          videoCategoryId: '10',
+          maxResults,
+          key: this.apiKey,
+        },
+      });
+
+      const items = searchResponse.data.items.filter(
+        (item: YouTubeSearchResult) => item.id?.videoId
+      );
+
+      if (items.length === 0) return [];
+
+      const videoIds = items
+        .map((item: YouTubeSearchResult) => item.id.videoId)
+        .join(',');
+
+      const detailsResponse = await axios.get(`${BASE_URL}/videos`, {
+        params: {
+          part: 'snippet,contentDetails',
+          id: videoIds,
+          key: this.apiKey,
+        },
+      });
+
+      return this.formatTracks(detailsResponse.data.items);
+    } catch (error) {
+      console.error('Error fetching related videos:', error);
+      return [];
+    }
+  }
+
   private formatTracks(videos: YouTubeVideoDetails[]): Track[] {
     return videos.map((video) => ({
       id: `youtube-${video.id}`,
@@ -55,7 +93,6 @@ export class YouTubeService {
   }
 
   private cleanTitle(title: string): string {
-    // Remove common music video markers
     return title
       .replace(/\(Official Video\)/gi, '')
       .replace(/\(Official Audio\)/gi, '')

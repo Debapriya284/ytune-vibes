@@ -2,60 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-/* YouTune Music Player Design System */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* YouTune Dark Theme Colors */
-    --background: 220 13% 8%;
-    --foreground: 210 40% 98%;
+    --background: 240 10% 6%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 13% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 8% 9%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 13% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 8% 11%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 270 91% 65%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 82 85% 55%;
+    --primary-foreground: 240 10% 6%;
 
-    --secondary: 220 13% 15%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 8% 14%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 220 13% 14%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 285 85% 70%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 82 70% 45%;
+    --accent-foreground: 240 10% 6%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 15%;
-    --ring: 270 91% 65%;
+    --border: 240 6% 15%;
+    --input: 240 8% 14%;
+    --ring: 82 85% 55%;
 
     --radius: 0.75rem;
 
-    /* Custom YouTune Colors */
-    --primary-glow: 270 91% 75%;
-    --secondary-glow: 285 85% 80%;
-    --surface: 220 13% 12%;
-    --surface-hover: 220 13% 16%;
-    --overlay: 220 13% 5%;
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(270 91% 65%), hsl(285 85% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(220 13% 12%), hsl(220 13% 18%));
-    --gradient-overlay: linear-gradient(180deg, transparent, hsl(220 13% 5% / 0.8));
-    
-    /* Shadows */
-    --shadow-glow: 0 0 30px hsl(270 91% 65% / 0.3);
-    --shadow-card: 0 4px 20px hsl(220 13% 5% / 0.4);
-    --shadow-elevated: 0 8px 40px hsl(220 13% 5% / 0.6);
-    
-    /* Animations */
+    --primary-glow: 82 85% 65%;
+    --secondary-glow: 82 60% 50%;
+    --surface: 240 8% 10%;
+    --surface-hover: 240 8% 14%;
+    --overlay: 240 10% 4%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(82 85% 55%), hsl(82 70% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(240 8% 10%), hsl(240 8% 16%));
+    --gradient-overlay: linear-gradient(180deg, transparent, hsl(240 10% 4% / 0.8));
+
+    --shadow-glow: 0 0 40px hsl(82 85% 55% / 0.15);
+    --shadow-card: 0 4px 24px hsl(240 10% 4% / 0.5);
+    --shadow-elevated: 0 12px 48px hsl(240 10% 4% / 0.7);
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-quick: all 0.15s ease-out;
   }
@@ -72,37 +66,34 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    background: linear-gradient(135deg, hsl(220 13% 8%), hsl(220 13% 6%));
+    background: hsl(240 10% 6%);
     min-height: 100vh;
   }
 
-  /* Scrollbar Styling */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-muted;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary rounded-full;
+    @apply bg-muted-foreground/30 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-glow;
+    @apply bg-muted-foreground/50;
   }
 }
 
 @layer components {
-  /* Glass morphism effect */
   .glass {
-    background: hsl(var(--card) / 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--border) / 0.5);
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--border) / 0.4);
   }
 
-  /* Gradient text */
   .gradient-text {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -110,49 +101,43 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Hover glow effect */
   .hover-glow {
     transition: var(--transition-smooth);
   }
   
   .hover-glow:hover {
     box-shadow: var(--shadow-glow);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
-  /* Player button styles */
   .player-button {
-    @apply w-12 h-12 rounded-full flex items-center justify-center;
-    background: var(--gradient-primary);
-    @apply shadow-lg hover:shadow-xl;
+    @apply w-14 h-14 rounded-full flex items-center justify-center;
+    background: hsl(var(--primary));
+    @apply shadow-lg;
     @apply transition-all duration-300;
     @apply hover:scale-105 active:scale-95;
   }
 
   .player-button-secondary {
     @apply w-10 h-10 rounded-full flex items-center justify-center;
-    @apply bg-surface hover:bg-surface-hover;
-    @apply border border-border;
+    @apply bg-transparent;
     @apply transition-all duration-200;
-    @apply hover:scale-105 active:scale-95;
+    @apply hover:bg-muted active:scale-95;
   }
 
-  /* Track card animations */
   .track-card {
-    @apply p-4 rounded-xl bg-surface border border-border;
-    @apply hover:bg-surface-hover;
-    @apply transition-all duration-300;
+    @apply p-3 rounded-xl;
+    @apply bg-transparent;
+    @apply hover:bg-surface;
+    @apply transition-all duration-200;
   }
 
   .track-card:hover {
-    transform: translateY(-2px);
-    border-color: hsl(var(--primary) / 0.3);
-    box-shadow: 0 8px 25px hsl(var(--primary) / 0.1);
+    background: hsl(var(--surface-hover));
   }
 
-  /* Music visualizer bars */
   .visualizer-bar {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
     @apply rounded-full;
     animation: visualizer 1.2s ease-in-out infinite alternate;
   }
@@ -166,7 +151,6 @@
     100% { height: 100%; }
   }
 
-  /* Search input styling */
   .search-input {
     @apply w-full px-6 py-4 rounded-2xl;
     @apply bg-surface border border-border;
@@ -175,25 +159,26 @@
     @apply transition-all duration-200;
   }
 
-  /* Progress bar */
   .progress-bar {
-    @apply h-2 bg-muted rounded-full overflow-hidden;
+    @apply h-1 bg-muted rounded-full overflow-hidden;
   }
 
   .progress-fill {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
     @apply h-full rounded-full;
     @apply transition-all duration-100;
   }
 
-  /* Volume slider */
-  .volume-slider {
-    @apply w-24 h-2 bg-muted rounded-full overflow-hidden;
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
-  .volume-fill {
-    background: var(--gradient-primary);
-    @apply h-full rounded-full;
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  .now-playing-glow {
+    box-shadow: 0 0 60px hsl(82 85% 55% / 0.2), 0 0 120px hsl(82 85% 55% / 0.05);
   }
 }
-
